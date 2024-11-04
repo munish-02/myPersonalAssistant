@@ -11,7 +11,7 @@ import os
 # Create the Assistant
 def create_assistant(client):
     
-    return client.beta.assistants.retrieve("asst_zLdW82PgNG1PvNQXHJ6fafFO")
+    return client.beta.assistants.retrieve("asst_fCJHgmM09VKGs9lRbxXdybes")
 
 # Create a conversation thread
 def create_thread(client):
