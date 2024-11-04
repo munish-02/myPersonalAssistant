@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App</title>
+</head>
+<body>
+    <h1>Square Calculator</h1>
+    <form action="/square" method="post">
+        <input type="number" name="number" placeholder="Enter a number" required>
+        <button type="submit">Calculate Square</button>
+    </form>
+
+    <h2>Result:</h2>
+    {% if result is not none %}
+        <p>The square is: {{ result }}</p>
+    {% endif %}
+
+    <h1>Text Input</h1>
+    <form action="/submit_text" method="post">
+        <input type="text" name="text_input" placeholder="Enter some text" required>
+        <button type="submit">Submit Text</button>
+    </form>
+
+    <h2>Submitted Text:</h2>
+    {% if text_output %}
+        <p>{{ text_output }}</p>
+    {% endif %}
+</body>
+</html>
