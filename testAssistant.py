@@ -1,13 +1,17 @@
 import openai
 from openai import OpenAI
+
 import time
+import os
+
+
 # Initialize the OpenAI client
 #client = OpenAI()
 
 # Create the Assistant
 def create_assistant(client):
     
-    return client.beta.assistants.retrieve("asst_kGLwlT0vAnEA3IhRHqn4huHO")
+    return client.beta.assistants.retrieve("asst_zLdW82PgNG1PvNQXHJ6fafFO")
 
 # Create a conversation thread
 def create_thread(client):
@@ -34,8 +38,7 @@ def create_run(client,thread, assistant):
 
 # Main loop to interact with the assistant
 def main():
-    openai.api_key=''
-
+    openai.api_key = os.getenv('OPENAI_API_KEY')
     client=openai.OpenAI()
     assistant = create_assistant(client)
     thread = create_thread(client)
