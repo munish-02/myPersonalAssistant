@@ -3,46 +3,29 @@ import time
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
-def home():
-    return render_template('index.html', result=None, text_output=None)
-
-@app.route('/square', methods=['POST'])
-def square():
-    try:
-        # Get the number from the form input
-        number = request.form.get('number', type=float)
-        if number is None:
-            return "Please provide a number.", 400
-        
-        # Calculate the square of the number
-        result = number ** 2
-        return render_template('index.html', result=result, text_output=None)
-    except Exception as e:
-        return f"An error occurred: {str(e)}", 500
-
-@app.route('/submit_text', methods=['POST'])
-def submit_text():
-    try:
-        # Get the text input from the form
-        text_input = request.form.get('text_input', type=str)
-        if text_input is None:
-            return "Please provide some text.", 400
-
-        # Print the text to the terminal
-        print(text_input)
-
-        return render_template('index.html', result=None, text_output=text_input)
-    except Exception as e:
-        return f"An error occurred: {str(e)}", 500
-
-@app.errorhandler(400)
-def bad_request(error):
-    return "Bad request. Please check your request format.", 400
-
-@app.errorhandler(Exception)
-def handle_exception(e):
-    return f"An error occurred: {str(e)}", 500
+@app.route('/', methods=['GET', 'POST'])
+def chat():
+    if request.method == 'POST':
+        try:
+            # Get the user's message from the form
+            user_message = request.form.get('user_message', type=str)
+            if not user_message:
+                return render_template('chat.html', chat_history=["Please enter a message."])
+            
+            # Process the user's message (you can replace this logic with any AI or chatbot logic)
+            bot_response = f"Echo: {user_message}"
+            
+            # Load chat history from the form data (for multi-turn chat)
+            chat_history = request.form.getlist('chat_history')
+            chat_history.append(f"You: {user_message}")
+            chat_history.append(f"Bot: {bot_response}")
+            
+            return render_template('chat.html', chat_history=chat_history)
+        except Exception as e:
+            return render_template('chat.html', chat_history=[f"An error occurred: {str(e)}"])
+    else:
+        # Render the initial empty chat interface
+        return render_template('chat.html', chat_history=[])
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, ssl_context=('/etc/letsencrypt/live/www.ainythink.com/fullchain.pem','/etc/letsencrypt/live/www.ainythink.com/privkey.pem'))
