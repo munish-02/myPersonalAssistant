@@ -45,4 +45,4 @@ def handle_exception(e):
     return f"An error occurred: {str(e)}", 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, ssl_context=('/etc/letsencrypt/live/www.ainythink.com/fullchain.pem','/etc/letsencrypt/live/www.ainythink.com/privkey.pem'))
+    app.run(host='0.0.0.0', port=443, ssl_context=('/etc/letsencrypt/live/www.ainythink.com/fullchain.pem','/etc/letsencrypt/live/www.ainythink.com/privkey.pem'))
