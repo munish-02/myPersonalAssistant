@@ -8,8 +8,7 @@ app.secret_key = 'your_secret_key'  # Needed for session management
 
 # Initialize the OpenAI client
 openai.api_key = os.getenv('OPENAI_API_KEY')
-client = openai.OpenAI()
-
+client=openai
 def create_assistant(client):
     return client.beta.assistants.retrieve("asst_fCJHgmM09VKGs9lRbxXdybes")
 
