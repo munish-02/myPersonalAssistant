@@ -1,48 +1,41 @@
-from flask import Flask, request, render_template
-import time
+from flask import Flask, request, render_template, session
+from modules.assistant import create_assistant, get_assistant_response
+from modules.thread import create_thread
+import os
 
 app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use environment variable for better security
 
-@app.route('/', methods=['GET'])
-def home():
-    return render_template('index.html', result=None, text_output=None)
+# Initialize assistant and thread globally
+assistant = create_assistant()
+thread = create_thread()
 
-@app.route('/square', methods=['POST'])
-def square():
-    try:
-        # Get the number from the form input
-        number = request.form.get('number', type=float)
-        if number is None:
-            return "Please provide a number.", 400
-        
-        # Calculate the square of the number
-        result = number ** 2
-        return render_template('index.html', result=result, text_output=None)
-    except Exception as e:
-        return f"An error occurred: {str(e)}", 500
+@app.route('/', methods=['GET', 'POST'])
+def chat():
+    # Initialize chat history if not already in session
+    if 'chat_history' not in session:
+        session['chat_history'] = []
 
-@app.route('/submit_text', methods=['POST'])
-def submit_text():
-    try:
-        # Get the text input from the form
-        text_input = request.form.get('text_input', type=str)
-        if text_input is None:
-            return "Please provide some text.", 400
+    if request.method == 'POST':
+        try:
+            # Get the user's message from the form
+            user_message = request.form.get('user_message', type=str)
+            if not user_message:
+                return render_template('chat.html', chat_history=session['chat_history'])
 
-        # Print the text to the terminal
-        print(text_input)
+            # Get assistant response
+            bot_response = get_assistant_response(thread, assistant, user_message)
 
-        return render_template('index.html', result=None, text_output=text_input)
-    except Exception as e:
-        return f"An error occurred: {str(e)}", 500
+            # Append user and bot messages to chat history
+            session['chat_history'].append(f"You: {user_message}")
+            session['chat_history'].append(f"Bot: {bot_response}")
 
-@app.errorhandler(400)
-def bad_request(error):
-    return "Bad request. Please check your request format.", 400
-
-@app.errorhandler(Exception)
-def handle_exception(e):
-    return f"An error occurred: {str(e)}", 500
+            return render_template('chat.html', chat_history=session['chat_history'])
+        except Exception as e:
+            return render_template('chat.html', chat_history=[f"An error occurred: {str(e)}"])
+    else:
+        return render_template('chat.html', chat_history=session['chat_history'])
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, ssl_context=('/etc/letsencrypt/live/www.ainythink.com/fullchain.pem','/etc/letsencrypt/live/www.ainythink.com/privkey.pem'))
+    app.run(host='0.0.0.0', port=443, ssl_context=('/etc/letsencrypt/live/www.ainythink.com/fullchain.pem',
+                                                   '/etc/letsencrypt/live/www.ainythink.com/privkey.pem'))
