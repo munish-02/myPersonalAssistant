@@ -17,12 +17,12 @@
             color: #333;
         }
         .container {
-            width: 60%;
-            max-width: 800px;
+            width: 100%; /* Use full width */
+            max-width: 100%; /* Ensure no constraints on the width */
+            height: 100vh; /* Occupy the full viewport height */
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
+            border-radius: 0; /* Remove border radius for edge-to-edge look */
+            box-shadow: none; /* Remove shadow for full-screen appearance */
             display: flex;
             flex-direction: column;
         }
@@ -34,7 +34,7 @@
             font-size: 1.5rem;
         }
         .chat-box {
-            height: 400px;
+            flex: 1;
             overflow-y: auto;
             padding: 15px;
             background: #f4f4f9;
