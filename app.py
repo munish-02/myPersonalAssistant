@@ -14,6 +14,7 @@ thread = create_thread()
 def chat():
     # Initialize chat history if not already in session
     if 'chat_history' not in session:
+        print("New Session")
         session['chat_history'] = []
 
     if request.method == 'POST':
