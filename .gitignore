@@ -1,3 +1,4 @@
 myenv/
 thread_store.pkl
 modules/__pycache__
+databases/

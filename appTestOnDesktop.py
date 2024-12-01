@@ -1,12 +1,11 @@
 from flask import Flask, request, render_template, session
 import os
 import uuid
-import pickle
 from datetime import datetime, timedelta
-
-from modules.assistant import create_assistant, get_assistant_response
+import sqlite3
+from modules.assistant import create_assistant, get_assistant_response,addInfoToDatabase,getRelaventInfoFromDatabase
 from modules.thread import create_thread
-from modules.fileManagement import load_thread_store, save_thread_store
+from modules.fileManagement import load_thread_store, save_thread_store, returnVectorDatabase,saveVectorDatabase,createNewIndexDatabase
 
 # Flask app setup
 app = Flask(__name__)
@@ -14,13 +13,21 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use envi
 
 # Path to save and load thread_store data
 
-
+INDEX_DATABASE_PATH='databases/indexDatabase.bin'
+TEXT_DATABASE_PATH='databases/assistantDatabase.db'
 # Initialize assistant globally
 assistant = create_assistant()
 
 
 # Load thread store at the start
 thread_store = load_thread_store()
+if os.path.exists(INDEX_DATABASE_PATH):
+    index=returnVectorDatabase(INDEX_DATABASE_PATH)
+else:
+    index=createNewIndexDatabase()
+    saveVectorDatabase(index,INDEX_DATABASE_PATH)
+#addInfoToDatabase("I have a doctor's appointment with Dr Rajkumar for a tooth cleanup on 26th November. Do not forget to take your laptop and lab reports for this",index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
+getRelaventInfoFromDatabase("What do I have to do with my laptop?",index,TEXT_DATABASE_PATH,1)
 
 @app.route('/', methods=['GET', 'POST'])
 def chat():
@@ -56,7 +63,7 @@ def chat():
                 return render_template('chat.html', chat_history=thread_data['chat_history'])
 
             # Get assistant response
-            bot_response = get_assistant_response(thread, assistant, user_message)
+            bot_response = get_assistant_response(thread, assistant, user_message,index,TEXT_DATABASE_PATH)
 
             # Append user and bot messages to chat history
             thread_data['chat_history'].append(f"You: {user_message}")
