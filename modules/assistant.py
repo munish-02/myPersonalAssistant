@@ -6,6 +6,7 @@ from modules.fileManagement import save_thread_store, saveVectorDatabase
 import faiss
 import numpy as np
 import sqlite3
+import json
 
 
 
@@ -15,7 +16,7 @@ openai.api_key = OPENAI_API_KEY
 def create_assistant():
     return openai.beta.assistants.retrieve("asst_fCJHgmM09VKGs9lRbxXdybes")
 
-def get_assistant_response(thread, assistant, user_input,index,TEXT_DATABASE_PATH):
+def get_assistant_response(thread, assistant, user_input,index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH):
     try:
         # Add user message to the thread
         openai.beta.threads.messages.create(
@@ -30,6 +31,23 @@ def get_assistant_response(thread, assistant, user_input,index,TEXT_DATABASE_PAT
         # Wait for the run to complete
         while run.status != 'completed':
             time.sleep(0.1)
+            if(run.status=='requires_action'):
+                tool_outputs = []
+                if(run.required_action.type=='submit_tool_outputs'):
+                    for i in run.required_action.submit_tool_outputs.tool_calls:
+                        if(i.function.name=="addNotesToDatabase"):
+                            data = json.loads(i.function.arguments)
+                            input_notes = data.get("inputNotes", "")
+                            status=addNotesToDatabase(input_notes,index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
+                            tool_outputs.append({"tool_call_id":i.id,"output":str(status)})
+                        elif(i.function.name=="getRelaventInfoFromDatabase"):
+                            data = json.loads(i.function.arguments)
+                            input_notes = data.get("searchString", "")
+                            relaventNotes=getRelaventInfoFromDatabase(input_notes,index,TEXT_DATABASE_PATH,10)
+                            tool_outputs.append({"tool_call_id":i.id,"output":str(relaventNotes)})
+
+                    openai.beta.threads.runs.submit_tool_outputs(run.id,thread_id=thread.id,tool_outputs=tool_outputs)
+
             run = openai.beta.threads.runs.retrieve(
                 thread_id=thread.id,
                 run_id=run.id
@@ -55,27 +73,35 @@ def getRelaventInfoFromDatabase(query,index,TEXT_DATABASE_PATH,numberOfRelaventE
     relaventInfo=[]
     indices=findSimilarities(query,index,numberOfRelaventEntries)
     cursor=conn.cursor()
-    for i in indices:
-        index_value = int(i[0]) 
-        cursor.execute("SELECT * FROM my_table LIMIT 1 OFFSET ?", (index_value,))
-        row = cursor.fetchone()
-        relaventInfo.append(row[1])
+    for i in indices[0]:
+        index_value = int(i)
+        if(index_value>-1):
+            cursor.execute("SELECT * FROM my_table LIMIT 1 OFFSET ?", (index_value,))
+            row = cursor.fetchone()
+            relaventInfo.append(row[1])
 
     conn.close()
+    return " ".join(relaventInfo)
 
 
 
 
-def addInfoToDatabase(input,indexDb,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH):
-    conn=sqlite3.connect(TEXT_DATABASE_PATH)
-    cursor=conn.cursor()
-    cursor.execute("INSERT INTO my_table (string) VALUES (?)", (input,))
-    conn.commit()
-    embedding=getEmbeddings(input)
-    embedding = embedding.reshape(1, -1)
-    indexDb.add(np.array(embedding))
-    conn.close()
-    saveVectorDatabase(indexDb,INDEX_DATABASE_PATH)
+
+def addNotesToDatabase(input,indexDb,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH):
+    try:
+        conn=sqlite3.connect(TEXT_DATABASE_PATH)
+        cursor=conn.cursor()
+        cursor.execute("INSERT INTO my_table (string) VALUES (?)", (input,))
+        conn.commit()
+        embedding=getEmbeddings(input)
+        embedding = embedding.reshape(1, -1)
+        indexDb.add(np.array(embedding))
+        conn.close()
+        saveVectorDatabase(indexDb,INDEX_DATABASE_PATH)
+        return "success"
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
     
 
 

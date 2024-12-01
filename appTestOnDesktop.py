@@ -3,7 +3,7 @@ import os
 import uuid
 from datetime import datetime, timedelta
 import sqlite3
-from modules.assistant import create_assistant, get_assistant_response,addInfoToDatabase,getRelaventInfoFromDatabase
+from modules.assistant import create_assistant, get_assistant_response,addNotesToDatabase,getRelaventInfoFromDatabase
 from modules.thread import create_thread
 from modules.fileManagement import load_thread_store, save_thread_store, returnVectorDatabase,saveVectorDatabase,createNewIndexDatabase
 
@@ -26,8 +26,8 @@ if os.path.exists(INDEX_DATABASE_PATH):
 else:
     index=createNewIndexDatabase()
     saveVectorDatabase(index,INDEX_DATABASE_PATH)
-#addInfoToDatabase("I have a doctor's appointment with Dr Rajkumar for a tooth cleanup on 26th November. Do not forget to take your laptop and lab reports for this",index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
-getRelaventInfoFromDatabase("What do I have to do with my laptop?",index,TEXT_DATABASE_PATH,1)
+#addNotesToDatabase("I have a doctor's appointment with Dr Rajkumar for a tooth cleanup on 26th November. Do not forget to take your laptop and lab reports for this",index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
+#getRelaventInfoFromDatabase("What do I have to do with my laptop?",index,TEXT_DATABASE_PATH,1)
 
 @app.route('/', methods=['GET', 'POST'])
 def chat():
@@ -63,7 +63,7 @@ def chat():
                 return render_template('chat.html', chat_history=thread_data['chat_history'])
 
             # Get assistant response
-            bot_response = get_assistant_response(thread, assistant, user_message,index,TEXT_DATABASE_PATH)
+            bot_response = get_assistant_response(thread, assistant, user_message,index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
 
             # Append user and bot messages to chat history
             thread_data['chat_history'].append(f"You: {user_message}")
