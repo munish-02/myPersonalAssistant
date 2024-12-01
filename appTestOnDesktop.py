@@ -2,32 +2,22 @@ from flask import Flask, request, render_template, session
 import os
 import uuid
 import pickle
+from datetime import datetime, timedelta
 
-# Replace these with your actual assistant and thread modules
 from modules.assistant import create_assistant, get_assistant_response
 from modules.thread import create_thread
+from modules.fileManagement import load_thread_store, save_thread_store
 
 # Flask app setup
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use environment variable for better security
 
 # Path to save and load thread_store data
-THREAD_STORE_FILE = 'thread_store.pkl'
+
 
 # Initialize assistant globally
 assistant = create_assistant()
 
-def load_thread_store():
-    """Load thread_store from the pickle file if it exists."""
-    if os.path.exists(THREAD_STORE_FILE):
-        with open(THREAD_STORE_FILE, 'rb') as f:
-            return pickle.load(f)
-    return {}
-
-def save_thread_store(thread_store):
-    """Save thread_store to a pickle file."""
-    with open(THREAD_STORE_FILE, 'wb') as f:
-        pickle.dump(thread_store, f)
 
 # Load thread store at the start
 thread_store = load_thread_store()
@@ -42,13 +32,20 @@ def chat():
         session_id = str(uuid.uuid4())  # Generate a unique session ID
         session['session_id'] = session_id
         thread = create_thread()  # Create a new thread object
-        thread_store[session_id] = {'thread': thread, 'chat_history': []}  # Store thread and chat_history in memory
+        thread_store[session_id] = {'thread': thread, 'chat_history': [], 'createdAt':datetime.now()}  # Store thread and chat_history in memory
         thread_data = thread_store.get(session_id)
         
     else:
         session_id = session['session_id']
         thread_data = thread_store.get(session_id)  # Retrieve thread and chat history from the store
         thread = thread_data['thread']
+        current_time=datetime.now()
+        threadCreatedAT=thread_data['createdAt']
+        if(current_time-threadCreatedAT>timedelta(hours=1)):
+            thread = create_thread()  # Create a new thread object
+            thread_store[session_id] = {'thread': thread, 'chat_history': [], 'createdAt':datetime.now()}  # Store thread and chat_history in memory
+            thread_data = thread_store.get(session_id)
+
 
     # Handle POST requests
     if request.method == 'POST':
