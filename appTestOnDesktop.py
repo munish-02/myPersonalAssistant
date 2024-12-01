@@ -79,6 +79,8 @@ def chat():
 def save_on_shutdown(exception=None):
     """Save the thread store when the application shuts down."""
     save_thread_store(thread_store)
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, ssl_context=('/etc/letsencrypt/live/www.ainythink.com/fullchain.pem',
-                                                   '/etc/letsencrypt/live/www.ainythink.com/privkey.pem'))
+    # Ensure the thread store is loaded when the app starts
+    thread_store = load_thread_store()
+    app.run(host='127.0.0.1', port=5002, debug=True)

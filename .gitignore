@@ -1,1 +1,3 @@
 myenv/
+thread_store.pkl
+modules/__pycache__

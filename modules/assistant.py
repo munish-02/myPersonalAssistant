@@ -31,7 +31,7 @@ def get_assistant_response(thread, assistant, user_input):
 
         # Retrieve the latest assistant message
         messages = openai.beta.threads.messages.list(thread_id=thread.id)
-        for msg in messages.data[::-1]:  # Reverse iterate to find the latest assistant message
+        for msg in messages.data:  # Reverse iterate to find the latest assistant message
             if msg.role == 'assistant':
                 return "\n".join([block.text.value for block in msg.content])
     except Exception as e:
