@@ -18,6 +18,10 @@ def create_assistant():
 
 def get_assistant_response(thread, assistant, user_input,index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH):
     try:
+        current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Append the date and time to the input string
+        user_input = f"Today's date: {current_datetime} \n {user_input}"
         # Add user message to the thread
         openai.beta.threads.messages.create(
             thread_id=thread.id,
@@ -94,7 +98,7 @@ def addNotesToDatabase(input, indexDb, TEXT_DATABASE_PATH, INDEX_DATABASE_PATH):
         current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         # Append the date and time to the input string
-        input_with_date = f"{input} Today's date: {current_datetime}"
+        input_with_date = f"Date: {current_datetime} \n {input} "
         
         # Connect to the text database
         conn = sqlite3.connect(TEXT_DATABASE_PATH)
