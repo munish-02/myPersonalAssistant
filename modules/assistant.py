@@ -86,21 +86,35 @@ def getRelaventInfoFromDatabase(query,index,TEXT_DATABASE_PATH,numberOfRelaventE
 
 
 
+from datetime import datetime
 
-def addNotesToDatabase(input,indexDb,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH):
+def addNotesToDatabase(input, indexDb, TEXT_DATABASE_PATH, INDEX_DATABASE_PATH):
     try:
-        conn=sqlite3.connect(TEXT_DATABASE_PATH)
-        cursor=conn.cursor()
-        cursor.execute("INSERT INTO my_table (string) VALUES (?)", (input,))
+        # Get the current date and time
+        current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Append the date and time to the input string
+        input_with_date = f"{input} Today's date: {current_datetime}"
+        
+        # Connect to the text database
+        conn = sqlite3.connect(TEXT_DATABASE_PATH)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO my_table (string) VALUES (?)", (input_with_date,))
         conn.commit()
-        embedding=getEmbeddings(input)
+        
+        # Get embeddings and add to the index database
+        embedding = getEmbeddings(input_with_date)
         embedding = embedding.reshape(1, -1)
         indexDb.add(np.array(embedding))
+        
+        # Close the connection and save the vector database
         conn.close()
-        saveVectorDatabase(indexDb,INDEX_DATABASE_PATH)
+        saveVectorDatabase(indexDb, INDEX_DATABASE_PATH)
+        
         return "success"
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
 
     
 
