@@ -26,6 +26,10 @@ else:
     index=createNewIndexDatabase()
     saveVectorDatabase(index,INDEX_DATABASE_PATH)
 
+@app.route('/')
+def landing():
+    return render_template('landing.html')
+
 @app.route('/ass', methods=['GET', 'POST'])
 def chat():
     global thread_store  # Ensure we're working with the global thread_store
