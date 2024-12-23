@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Notes</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .note {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .delete-btn {
+            background: #ff4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Delete Notes</h1>
+    <form method="POST">
+        {% for note in notes %}
+        <div class="note">
+            <input type="checkbox" name="note_ids" value="{{ note[0] }}">
+            <span>{{ note[1] }}</span>
+        </div>
+        {% endfor %}
+        <button type="submit" class="delete-btn">Delete Selected</button>
+    </form>
+</body>
+</html>

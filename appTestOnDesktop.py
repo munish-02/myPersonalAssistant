@@ -1,9 +1,8 @@
-from flask import Flask, request, render_template, session
+from flask import Flask, request, render_template, session, redirect, url_for
 import os
 import uuid
 from datetime import datetime, timedelta
-import sqlite3
-from modules.assistant import create_assistant, get_assistant_response,addNotesToDatabase,getRelaventInfoFromDatabase
+from modules.assistant import create_assistant, get_assistant_response,getAllNotes,deleteNotesFromDatabase
 from modules.thread import create_thread
 from modules.fileManagement import load_thread_store, save_thread_store, returnVectorDatabase,saveVectorDatabase,createNewIndexDatabase
 
@@ -26,10 +25,8 @@ if os.path.exists(INDEX_DATABASE_PATH):
 else:
     index=createNewIndexDatabase()
     saveVectorDatabase(index,INDEX_DATABASE_PATH)
-#addNotesToDatabase("I have a doctor's appointment with Dr Rajkumar for a tooth cleanup on 26th November. Do not forget to take your laptop and lab reports for this",index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
-#getRelaventInfoFromDatabase("What do I have to do with my laptop?",index,TEXT_DATABASE_PATH,1)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/ass', methods=['GET', 'POST'])
 def chat():
     global thread_store  # Ensure we're working with the global thread_store
 
@@ -79,7 +76,19 @@ def chat():
         # Handle GET requests
         return render_template('chat.html', chat_history=thread_data['chat_history'])
 
+@app.route('/deleteNotes', methods=['GET', 'POST'])
+def deleteNotesPage():
+    if request.method == 'POST':
+        note_ids = request.form.getlist('note_ids')
+        note_ids = [int(id) for id in note_ids]
+        deleteNotesFromDatabase(note_ids,index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
+        return redirect(url_for('deleteNotesPage'))
+    
+    notes = getAllNotes(TEXT_DATABASE_PATH)
+    return render_template('deleteNotes.html', notes=notes)
+
 @app.teardown_appcontext
+
 def save_on_shutdown(exception=None):
     """Save the thread store when the application shuts down."""
     save_thread_store(thread_store)

@@ -7,6 +7,7 @@ import faiss
 import numpy as np
 import sqlite3
 import json
+from datetime import datetime
 
 
 
@@ -90,8 +91,6 @@ def getRelaventInfoFromDatabase(query,index,TEXT_DATABASE_PATH,numberOfRelaventE
 
 
 
-from datetime import datetime
-
 def addNotesToDatabase(input, indexDb, TEXT_DATABASE_PATH, INDEX_DATABASE_PATH):
     try:
         # Get the current date and time
@@ -119,12 +118,26 @@ def addNotesToDatabase(input, indexDb, TEXT_DATABASE_PATH, INDEX_DATABASE_PATH):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+def deleteNotesFromDatabase(note_ids,indexdb,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH):
+    conn = sqlite3.connect(TEXT_DATABASE_PATH)
+    cursor = conn.cursor()
+    for note_id in note_ids:
+        cursor.execute("SELECT (SELECT COUNT(*) FROM my_table t2 WHERE t2.id <= t1.id) - 1 as row_num FROM my_table t1 WHERE id = ?", (note_id,))
+        row_num = cursor.fetchone()[0]
+        cursor.execute("DELETE FROM my_table WHERE id = ?", (note_id,))
+        indexdb.remove_ids(np.array([row_num]))
+    conn.commit()
+    conn.close()
+    saveVectorDatabase(indexdb,INDEX_DATABASE_PATH)
 
+def getAllNotes(TEXT_DATABASE_PATH):
+    conn = sqlite3.connect(TEXT_DATABASE_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM my_table")
+    notes = cursor.fetchall()
+    conn.close()
+    return notes
     
-
-
-
-
 def findSimilarities(query,index, nTopQueries):
     queryEmbedding=getEmbeddings(query)
     queryEmbedding = queryEmbedding.reshape(1, -1)
