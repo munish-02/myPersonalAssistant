@@ -1,31 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask App</title>
-</head>
-<body>
-    <h1>Square Calculator</h1>
-    <form action="/square" method="post">
-        <input type="number" name="number" placeholder="Enter a number" required>
-        <button type="submit">Calculate Square</button>
-    </form>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
 
-    <h2>Result:</h2>
-    {% if result is not none %}
-        <p>The square is: {{ result }}</p>
-    {% endif %}
+{% block content %}
+<div class="hero-section">
+    <div class="slideshow-container">
+        <!-- Add your images in static/images folder and reference them here -->
+        <div class="slide fade">
+            <img src="{{ url_for('static', filename='images/slide1.jpg') }}" alt="Interior Design">
+        </div>
+        <div class="slide fade">
+            <img src="{{ url_for('static', filename='images/slide2.jpg') }}" alt="False Ceiling">
+        </div>
+        <div class="slide fade">
+            <img src="{{ url_for('static', filename='images/slide3.jpg') }}" alt="Modern Interior">
+        </div>
+    </div>
+</div>
 
-    <h1>Text Input</h1>
-    <form action="/submit_text" method="post">
-        <input type="text" name="text_input" placeholder="Enter some text" required>
-        <button type="submit">Submit Text</button>
-    </form>
-
-    <h2>Submitted Text:</h2>
-    {% if text_output %}
-        <p>{{ text_output }}</p>
-    {% endif %}
-</body>
-</html>
+<section class="services">
+    <h2>Our Services</h2>
+    <div class="services-grid">
+        <div class="service-card">
+            <i class="fas fa-crown"></i>
+            <h3>Ceiling Tiles</h3>
+            <p>Premium quality ceiling tiles for modern interiors</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-layer-group"></i>
+            <h3>Partitioning Boards</h3>
+            <p>Innovative partitioning solutions</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-lightbulb"></i>
+            <h3>Lighting Solutions</h3>
+            <p>Modern lighting for every space</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
