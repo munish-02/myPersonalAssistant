@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
+    --primary-color: rgb(238, 111, 39);
+    --secondary-color: rgb(58, 43, 151);
     --accent-color: #e74c3c;
     --light-color: #ecf0f1;
 }
@@ -29,9 +29,14 @@ body {
     z-index: 1000;
 }
 
-.logo h1 {
-    color: var(--light-color);
-    font-size: 1.5rem;
+.logo img {
+    height: 25px;
+    width: 91px;
+    display: block;
+}
+
+.logo a {
+    display: inline-block;
 }
 
 .nav-links a {
@@ -142,27 +147,6 @@ footer {
     margin-right: 1rem;
 }
 
-/* Animations */
-@keyframes fade {
-    from {opacity: 0.4}
-    to {opacity: 1}
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 1rem;
-    }
-    
-    .nav-links {
-        margin-top: 1rem;
-    }
-    
-    .nav-links a {
-        margin: 0 1rem;
-    }
-}
 /* About Page Styles */
 .about-hero {
     height: 40vh;
@@ -293,4 +277,26 @@ footer {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .nav-links {
+        margin-top: 1rem;
+    }
+    
+    .nav-links a {
+        margin: 0 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fade {
+    from {opacity: 0.4}
+    to {opacity: 1}
 }
