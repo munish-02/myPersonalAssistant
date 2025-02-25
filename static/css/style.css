@@ -196,8 +196,8 @@ button, .btn {
     height: 100%;
     background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.7),
-        rgba(0, 0, 0, 0.5)
+        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0.3)
     );
     z-index: 2;
 }
@@ -1116,7 +1116,7 @@ section {
         right: -250px; /* Changed from left to right */
         width: 250px; /* Reduced width */
         height: auto; /* Auto height instead of full viewport */
-        background: rgba(255, 255, 255, 0.98); /* Slightly transparent */
+        background: rgba(255, 255, 255, 0.75); /* Slightly transparent */
         flex-direction: column;
         padding: 20px;
         transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
