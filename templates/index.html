@@ -1,39 +1,71 @@
 {% extends "base.html" %}
+
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="hero-section">
-    <div class="slideshow-container">
-        <!-- Add your images in static/images folder and reference them here -->
-        <div class="slide fade">
-            <img src="{{ url_for('static', filename='images/slide1.jpg') }}" alt="Interior Design">
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content fade-in">
+        <h1 class="hero-title">Transform Your Space with Exceptional Design</h1>
+        <p class="hero-subtitle">Leading interior design solutions for residential and commercial spaces across India</p>
+        <div class="hero-cta">
+          <a href="services.html" class="hero-btn primary-btn">Our Services</a>
+          <a href="contact.html" class="hero-btn secondary-btn">Get in Touch</a>
         </div>
-        <div class="slide fade">
-            <img src="{{ url_for('static', filename='images/slide2.jpg') }}" alt="False Ceiling">
-        </div>
-        <div class="slide fade">
-            <img src="{{ url_for('static', filename='images/slide3.jpg') }}" alt="Modern Interior">
+      </div>
+    </div>
+    <div class="hero-bg">
+        <div class="slideshow">
+            <div class="slide" style="background-image: url('static/images/slideShow/image1.jpg');"></div>
+            <div class="slide" style="background-image: url('static/images/slideShow/image2.jpg');"></div>
+            <div class="slide" style="background-image: url('static/images/slideShow/image3.jpg');"></div>
+            <div class="slide" style="background-image: url('static/images/slideShow/image4.jpg');"></div>
+            <div class="slide" style="background-image: url('static/images/slideShow/image5.jpg');"></div>
         </div>
     </div>
-</div>
+</section>
 
-<section class="services">
-    <h2>Our Services</h2>
-    <div class="services-grid">
-        <div class="service-card">
-            <i class="fas fa-crown"></i>
-            <h3>Ceiling Tiles</h3>
-            <p>Premium quality ceiling tiles for modern interiors</p>
+<section id="services" class="services-section">
+    <div class="container">
+        <div class="section-title fade-in">
+            <h2>Our Services</h2>
+            <p>We offer comprehensive interior design solutions tailored to your needs</p>
         </div>
-        <div class="service-card">
-            <i class="fas fa-layer-group"></i>
-            <h3>Partitioning Boards</h3>
-            <p>Innovative partitioning solutions</p>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-lightbulb"></i>
-            <h3>Lighting Solutions</h3>
-            <p>Modern lighting for every space</p>
+        
+        <div class="grid fade-in">
+            <div class="card">
+                <div class="card-img">
+                    <img src="static/images/residential-interior.jpg" alt="Residential Interiors">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Residential Interiors</h3>
+                    <p class="card-text">Transform your home into a beautiful, functional space that reflects your personal style and meets your specific needs.</p>
+                    <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-img">
+                    <img src="static/images/office-interior.jpg" alt="Commercial Interiors">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Commercial Interiors</h3>
+                    <p class="card-text">Create productive and impressive workspaces that align with your brand identity and enhance employee satisfaction.</p>
+                    <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-img">
+                    <img src="static/images/furniture-design.jpg" alt="Custom Furniture">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Custom Furniture</h3>
+                    <p class="card-text">Design and manufacture unique furniture pieces that perfectly fit your space and complement your interior design.</p>
+                    <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
