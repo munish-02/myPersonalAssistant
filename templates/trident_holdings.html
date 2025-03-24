@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Trident Holdings{% endblock %}
+
+{% block content %}
+<div class="about-hero">
+    <h1>Trident Holdings</h1>
+</div>
+
+<section class="about-content">
+    <div class="container">
+        <div class="about-intro fade-in">
+            <h2>Your Trusted Partner in Interior Solutions</h2>
+            <p>Trident Holdings specializes in warehousing, distribution, and fabrication of high-quality interior products, ensuring seamless operations and efficient service delivery.</p>
+        </div>
+
+        <div class="about-grid fade-in">
+            <div class="about-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Our Address</h3>
+                <p>7-A2, Kadugodi Main Road, Whitefield<br>
+                   Bengaluru, Bengaluru Urban<br>
+                   Karnataka, 560 067</p>
+            </div>
+
+            <div class="about-card">
+                <i class="fas fa-phone-alt"></i>
+                <h3>Contact Us</h3>
+                <p>Phone: <a href="tel:+919845734234">+91 98457 34234</a><br>
+                   Email: <a href="mailto:tridentholdings@yahoo.co.in">tridentholdings@yahoo.co.in</a></p>
+            </div>
+
+            <div class="about-card">
+                <i class="fas fa-file-invoice"></i>
+                <h3>Business Details</h3>
+                <p>GST No: 29ACDPV4084G1Z7</p>
+            </div>
+        </div>
+
+        <div class="section-title mt-5 fade-in">
+            <h2>Services Offered</h2>
+        </div>
+
+        <div class="services-grid fade-in">
+            <div class="service-card">
+                <i class="fas fa-warehouse"></i>
+                <h3>Warehousing</h3>
+                <p>Comprehensive storage solutions for interior products.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-truck-loading"></i>
+                <h3>Distribution</h3>
+                <p>Efficient distribution network across South India.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-tools"></i>
+                <h3>Fabrication</h3>
+                <p>Custom fabrication services tailored for unique interior needs.</p>
+            </div>
+        </div>
+
+        <div class="facility-image fade-in text-center mt-5">
+            <img src="{{ url_for('static', filename='images/holdings-facility.jpg') }}" alt="Trident Holdings Facility" class="img-fluid">
+        </div>
+
+        <div class="cta-section mt-5 fade-in">
+            <div class="cta-box">
+                <h2>Need more information?</h2>
+                <p>Contact our team at Trident Holdings for any inquiries.</p>
+                <div class="cta-buttons mt-3">
+                    <a href="{{ url_for('contact') }}" class="btn">Contact Us</a>
+                    <a href="{{ url_for('about') }}" class="btn btn-outline ml-3">Back to About</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

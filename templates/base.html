@@ -17,7 +17,7 @@
             <div class="container">
                 <div class="logo">
                     <a href="{{ url_for('home') }}">
-                        <img src="{{ url_for('static', filename='logo.png') }}" alt="Trident Creations Logo">
+                        <img src="{{ url_for('static', filename='logo_dark.png') }}" alt="Trident Creations Logo">
                     </a>
                 </div>
                 
@@ -29,9 +29,97 @@
                 
                 <div class="nav-links" id="navLinks">
                     <a href="{{ url_for('home') }}" class="nav-link">Home</a>
-                    <a href="{{ url_for('about') }}" class="nav-link">About</a>
+                    
+                    <!-- About section with dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle">About <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-menu">
+                            <!-- Facilities submenu -->
+                            <div class="dropdown-submenu">
+                                <a href="#" class="dropdown-item submenu-toggle">Facilities <i class="fas fa-chevron-right"></i></a>
+                                <div class="submenu">
+                                    <a href="{{ url_for('tridentHoldings') }}" class="dropdown-item">Trident Holdings</a>
+                                    <a href="{{ url_for('tridentCreations') }}" class="dropdown-item">Trident Creations</a>
+                                    <a href="{{ url_for('tridentCreationsChennai') }}" class="dropdown-item">Trident Creations - Chennai</a>
+                                    <a href="{{ url_for('tridentInteriors') }}" class="dropdown-item">Trident Interiors</a>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('people') }}" class="dropdown-item">Our People</a>
+                            <a href="{{ url_for('quality') }}" class="dropdown-item">Our Quality</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Updated Products dropdown with new categories -->
+                    <div class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle">Products <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-menu">
+                            <!-- Acoustic Insulations -->
+                            <div class="dropdown-submenu">
+                                <a href="#" class="dropdown-item submenu-toggle">Acoustic Insulations <i class="fas fa-chevron-right"></i></a>
+                                <div class="submenu">
+                                    <a href="{{ url_for('products', category='woodwool') }}" class="dropdown-item">Woodwool</a>
+                                    <a href="{{ url_for('products', category='glasswool') }}" class="dropdown-item">Glasswool</a>
+                                    <a href="{{ url_for('products', category='fabric-paneling') }}" class="dropdown-item">Fabric Paneling</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Flooring -->
+                            <div class="dropdown-submenu">
+                                <a href="#" class="dropdown-item submenu-toggle">Flooring <i class="fas fa-chevron-right"></i></a>
+                                <div class="submenu">
+                                    <a href="{{ url_for('products', category='access-flooring') }}" class="dropdown-item">Access Flooring</a>
+                                    <a href="{{ url_for('products', category='carpets') }}" class="dropdown-item">Carpets</a>
+                                    <a href="{{ url_for('products', category='lvt') }}" class="dropdown-item">LVT</a>
+                                    <a href="{{ url_for('products', category='wooden-flooring') }}" class="dropdown-item">Wooden Flooring</a>
+                                    <a href="{{ url_for('products', category='wpc-decking') }}" class="dropdown-item">WPC Decking</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Tee grids & Metal Sections -->
+                            <a href="{{ url_for('products', category='tee-grids-metal-sections') }}" class="dropdown-item">Tee grids & Metal Sections</a>
+                            
+                            <!-- Internal & External Cladding Panels -->
+                            <a href="{{ url_for('products', category='cladding-panels') }}" class="dropdown-item">Internal & External Cladding Panels</a>
+                            
+                            <!-- False Ceiling System -->
+                            <div class="dropdown-submenu">
+                                <a href="#" class="dropdown-item submenu-toggle">False Ceiling System <i class="fas fa-chevron-right"></i></a>
+                                <div class="submenu">
+                                    <a href="{{ url_for('products', category='mineral-fiber') }}" class="dropdown-item">Mineral fiber</a>
+                                    <a href="{{ url_for('products', category='gypsum') }}" class="dropdown-item">Gypsum</a>
+                                    <a href="{{ url_for('products', category='metal') }}" class="dropdown-item">Metal</a>
+                                    <a href="{{ url_for('products', category='wooden') }}" class="dropdown-item">Wooden</a>
+                                    <a href="{{ url_for('products', category='calcium-silicate') }}" class="dropdown-item">Calcium Silicate</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Ceilings & partitions Boards -->
+                            <div class="dropdown-submenu">
+                                <a href="#" class="dropdown-item submenu-toggle">Ceilings & Partitions Boards <i class="fas fa-chevron-right"></i></a>
+                                <div class="submenu">
+                                    <a href="{{ url_for('products', category='calcium-silicate-boards') }}" class="dropdown-item">Calcium Silicate</a>
+                                    <a href="{{ url_for('products', category='fibre-cement') }}" class="dropdown-item">Fibre-Cement</a>
+                                    <a href="{{ url_for('products', category='gypsum-boards') }}" class="dropdown-item">Gypsum</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Metal Systems -->
+                            <div class="dropdown-submenu">
+                                <a href="#" class="dropdown-item submenu-toggle">Metal Systems <i class="fas fa-chevron-right"></i></a>
+                                <div class="submenu">
+                                    <a href="{{ url_for('products', category='lay-in') }}" class="dropdown-item">Lay-in</a>
+                                    <a href="{{ url_for('products', category='clip-in') }}" class="dropdown-item">Clip-in System</a>
+                                    <a href="{{ url_for('products', category='baffle') }}" class="dropdown-item">Baffle</a>
+                                    <a href="{{ url_for('products', category='open-cell') }}" class="dropdown-item">Open Cell</a>
+                                    <a href="{{ url_for('products', category='linear-system') }}" class="dropdown-item">Linear system</a>
+                                    <a href="{{ url_for('products', category='axiom') }}" class="dropdown-item">Axiom</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('services') }}" class="nav-link">Services / Projects</a>
                     <a href="{{ url_for('contact') }}" class="nav-link">Contact</a>
-                    <a href="#" class="nav-link highlight-btn">Get Quote</a>
+                    <a href="{{ url_for('quote') }}" class="nav-link highlight-btn">Get Quote</a>
                 </div>
             </div>
         </nav>
@@ -46,7 +134,7 @@
             <div class="footer-grid">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <img src="{{ url_for('static', filename='logo.png') }}" alt="Trident Creations Logo">
+                        <img src="{{ url_for('static', filename='logo_dark.png') }}" alt="Trident Creations Logo">
                     </div>
                     <p class="footer-about">
                         Trident Creations is a premier Retail company specializing in Interior products and designs since 2010.
@@ -58,15 +146,15 @@
                     <ul class="footer-contact-list">
                         <li>
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>#702, 9th A main Indiranagar 1st stage<br>Indiranagar, Bengaluru</span>
+                            <span>7-A2, Kadugddi Main Road, Whitefield, Bengaluru, Bengaluru Urban, Karnataka, 560067</span>
                         </li>
                         <li>
                             <i class="fas fa-phone"></i>
-                            <span>+91 8025219916</span>
+                            <span>+91 8668087392</span>
                         </li>
                         <li>
                             <i class="fas fa-envelope"></i>
-                            <span>info@tridentinteriors.in</span>
+                            <span>enquiries@tridentinteriors.in</span>
                         </li>
                     </ul>
                 </div>
@@ -76,9 +164,9 @@
                     <ul class="footer-links">
                         <li><a href="{{ url_for('home') }}">Home</a></li>
                         <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('products', category='ceilings') }}">Products</a></li>
+                        <li><a href="{{ url_for('services') }}">Services / Projects</a></li>
                         <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                        <li><a href="#">Services</a></li>
-                        <li><a href="#">Projects</a></li>
                     </ul>
                 </div>
                 
@@ -122,6 +210,28 @@
         navToggle.addEventListener('click', function() {
             navLinks.classList.toggle('active');
             navToggle.classList.toggle('active');
+        });
+        
+        // Mobile dropdown toggle
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const parent = this.parentElement;
+                parent.classList.toggle('active');
+            });
+        });
+        
+        // Submenu toggle for nested dropdowns
+        const submenuToggles = document.querySelectorAll('.submenu-toggle');
+        
+        submenuToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const parent = this.parentElement;
+                parent.classList.toggle('active');
+            });
         });
         
         // Slideshow functionality for homepage

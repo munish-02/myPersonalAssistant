@@ -1,8 +1,8 @@
-from flask import Flask, redirect, request, render_template, session, url_for
+from flask import Flask, request, render_template, session, redirect, url_for, flash
 import os
 import uuid
 from datetime import datetime, timedelta
-from modules.assistant import create_assistant, deleteNotesFromDatabase, get_assistant_response, getAllNotes
+from modules.assistant import create_assistant, get_assistant_response,getAllNotes,deleteNotesFromDatabase
 from modules.thread import create_thread
 from modules.fileManagement import load_thread_store, save_thread_store, returnVectorDatabase,saveVectorDatabase,createNewIndexDatabase
 
@@ -41,6 +41,83 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+#@app.route('/tridentHoldings')
+#def tridentHoldings():
+#    return render_template('tridentHoldings.html')
+
+@app.route('/products/<category>')
+def products(category):
+    # Map URL slugs to display names
+    category_names = {
+        'ceilings': 'Ceilings',
+        'partitions': 'Partitions',
+        'flooring': 'Flooring',
+        'exterior-wall-cladding': 'Exterior Wall Cladding',
+        'interior-wall-cladding': 'Interior Wall Cladding'
+    }
+    
+    # Get the display name or use the slug if not found
+    display_name = category_names.get(category, category.replace('-', ' ').title())
+    
+    # You can add logic here to fetch specific products for each category
+    # For now, we'll just pass the category name to the template
+    
+    return render_template('products.html', 
+                          category=category,
+                          display_name=display_name,
+                          title=f"{display_name} | Products")
+
+@app.route('/services')
+def services():
+    return render_template('services.html', title="Services & Projects")
+
+@app.route('/quote', methods=['GET', 'POST'])
+def quote():
+    if request.method == 'POST':
+        # Get form data
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        service = request.form.get('service')
+        project_details = request.form.get('project_details')
+        budget = request.form.get('budget')
+        timeline = request.form.get('timeline')
+        
+        # Here you would typically:
+        # 1. Save the quote request to a database
+        # 2. Send an email notification to your team
+        # 3. Send a confirmation email to the customer
+        
+        # For now, we'll just show a success message
+        #flash('Your quote request has been submitted successfully! Our team will contact you shortly.', 'success')
+        return redirect(url_for('quote'))
+    
+    return render_template('quote.html', title="Get a Quote")
+
+@app.route('/trident-holdings')
+def tridentHoldings():
+    return render_template('trident_holdings.html')
+
+@app.route('/trident-creations')
+def tridentCreations():
+    return render_template('trident_creations.html')
+
+@app.route('/trident-creations-chennai')
+def tridentCreationsChennai():
+    return render_template('trident_creations_chennai.html')
+
+@app.route('/trident-interiors')
+def tridentInteriors():
+    return render_template('trident_interiors.html')
+
+@app.route('/our-people')
+def people():
+    return render_template('people.html')
+
+@app.route('/our-quality')
+def quality():
+    return render_template('quality.html')
 
 @app.route('/ass', methods=['GET', 'POST'])
 def chat():
@@ -91,6 +168,7 @@ def chat():
     else:
         # Handle GET requests
         return render_template('chat.html', chat_history=thread_data['chat_history'])
+
 @app.route('/deleteNotes', methods=['GET', 'POST'])
 def deleteNotesPage():
     if request.method == 'POST':
@@ -101,7 +179,6 @@ def deleteNotesPage():
     
     notes = getAllNotes(TEXT_DATABASE_PATH)
     return render_template('deleteNotes.html', notes=notes)
-
 @app.teardown_appcontext
 def save_on_shutdown(exception=None):
     """Save the thread store when the application shuts down."""

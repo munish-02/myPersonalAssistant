@@ -1192,3 +1192,638 @@ section {
         transform: translateY(-8px) rotate(-45deg);
     }
 }
+/* Products Page Styles */
+.page-header {
+    background-color: #f5f5f5;
+    padding: 80px 0 40px;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.breadcrumbs {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.breadcrumbs a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.section-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 50px;
+}
+
+.section-intro h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.section-intro p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.product-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.product-image {
+    height: 220px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 20px;
+    background-color: white;
+}
+
+.product-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.product-info p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: transparent;
+    color: #0066cc;
+    border: 1px solid #0066cc;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #0066cc;
+    color: white;
+}
+
+.no-products {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.cta-section {
+    background-color: #f5f5f5;
+    padding: 60px 0;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.cta-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.cta-section p {
+    color: #666;
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #0066cc;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0055aa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 100px 0 30px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+}
+
+/* Dropdown menu styles */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-toggle i {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.dropdown.active .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    min-width: 220px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+    color: #0066cc;
+}
+
+/* Mobile responsive dropdown */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        position: static;
+        display: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        background-color: rgba(0,0,0,0.05);
+        border-radius: 0;
+        padding-left: 20px;
+    }
+    
+    .dropdown.active .dropdown-menu {
+        display: block;
+    }
+    
+    .dropdown-toggle {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .nav-links .dropdown {
+        width: 100%;
+    }
+}
+
+/* Quote Page Styles */
+.quote-section {
+    padding: 60px 0;
+}
+
+.quote-section .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: start;
+}
+
+.quote-form-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    padding: 40px;
+}
+
+.quote-form-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.quote-form-container p {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.quote-form .form-group {
+    margin-bottom: 20px;
+}
+
+.quote-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.quote-form input,
+.quote-form select,
+.quote-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.quote-form input:focus,
+.quote-form select:focus,
+.quote-form textarea:focus {
+    border-color: #0066cc;
+    outline: none;
+}
+
+.quote-form textarea {
+    resize: vertical;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-group input {
+    width: auto;
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.checkbox-group a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.checkbox-group a:hover {
+    text-decoration: underline;
+}
+
+.quote-form button {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.quote-info {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.info-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    padding: 25px;
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-card .icon {
+    font-size: 2rem;
+    color: #0066cc;
+    margin-bottom: 15px;
+}
+
+.info-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.info-card p {
+    color: #666;
+    line-height: 1.5;
+}
+
+.contact-info {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.contact-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.contact-info p {
+    color: #666;
+    line-height: 1.5;
+}
+
+.testimonials-section {
+    background-color: #f9f9f9;
+    padding: 60px 0;
+    margin-top: 60px;
+}
+
+.testimonials-section h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.testimonial {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    padding: 30px;
+    position: relative;
+}
+
+.quote-icon {
+    font-size: 1.5rem;
+    color: #0066cc;
+    opacity: 0.3;
+    margin-bottom: 15px;
+}
+
+.testimonial-text {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.testimonial-author {
+    display: flex;
+    flex-direction: column;
+}
+
+.author-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.author-company {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .quote-section .container {
+        grid-template-columns: 1fr;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .quote-form-container {
+        padding: 30px;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Nested dropdown styles */
+.dropdown-submenu {
+    position: relative;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    min-width: 200px;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    z-index: 1;
+    border-radius: 4px;
+}
+
+.dropdown-submenu.active > .submenu {
+    display: block;
+}
+
+.dropdown-submenu .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+/* Mobile-friendly adjustments for nested dropdowns */
+@media (max-width: 991px) {
+    .submenu {
+        position: static;
+        box-shadow: none;
+        padding-left: 20px;
+        background-color: rgba(0,0,0,0.02);
+    }
+    
+    .dropdown-submenu .dropdown-item {
+        padding: 10px;
+    }
+}
+/* Enhanced nested dropdown styles */
+.dropdown-menu {
+    min-width: 250px; /* Wider to accommodate longer text */
+    padding: 10px 0;
+}
+
+.dropdown-submenu {
+    position: relative;
+    width: 100%;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    min-width: 220px;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    z-index: 1;
+    border-radius: 4px;
+    padding: 10px 0;
+}
+
+.dropdown-submenu.active > .submenu {
+    display: block;
+}
+
+.dropdown-item {
+    white-space: normal;
+    padding: 10px 15px;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dropdown-submenu .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+.dropdown-item:hover, 
+.dropdown-item:focus {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+/* Prevent submenu from going off-screen */
+.dropdown-submenu:hover > .submenu {
+    display: block;
+}
+
+/* Third level submenu positioning */
+.submenu .dropdown-submenu .submenu {
+    left: 100%;
+    top: 0;
+}
+
+/* Mobile-friendly adjustments for nested dropdowns */
+@media (max-width: 991px) {
+    .dropdown-menu {
+        position: static;
+        float: none;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        padding-left: 15px;
+    }
+    
+    .submenu {
+        position: static;
+        box-shadow: none;
+        padding-left: 20px;
+        background-color: rgba(0,0,0,0.02);
+        width: 100%;
+    }
+    
+    .dropdown-submenu .dropdown-item {
+        padding: 10px;
+    }
+    
+    .dropdown-item {
+        white-space: normal;
+        padding: 10px;
+    }
+    
+    /* Ensure chevron icons point down on mobile */
+    .dropdown-submenu .fa-chevron-right {
+        transform: rotate(90deg);
+    }
+    
+    /* Only show submenu when parent is active */
+    .dropdown-submenu .submenu {
+        display: none;
+    }
+    
+    .dropdown-submenu.active > .submenu {
+        display: block;
+    }
+}

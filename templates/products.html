@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>{{ display_name }}</h1>
+        <div class="breadcrumbs">
+            <a href="{{ url_for('home') }}">Home</a> / 
+            <a href="#">Products</a> / 
+            <span>{{ display_name }}</span>
+        </div>
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="container">
+        <div class="section-intro">
+            <h2>Our {{ display_name }} Solutions</h2>
+            <p>Discover our premium range of {{ display_name.lower() }} products designed to enhance your space with style and functionality.</p>
+        </div>
+        
+        <!-- Product listing will go here -->
+        <div class="products-grid">
+            {% if category == 'ceilings' %}
+                <!-- Ceiling products -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename='images/products/ceilings/ceiling-1.jpg') }}" alt="Acoustic Ceiling">
+                    </div>
+                    <div class="product-info">
+                        <h3>Acoustic Ceiling Panels</h3>
+                        <p>Sound-absorbing panels that reduce noise and enhance room acoustics.</p>
+                        <a href="#" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+                <!-- Add more ceiling products as needed -->
+                
+            {% elif category == 'partitions' %}
+                <!-- Partition products -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename='images/products/partitions/partition-1.jpg') }}" alt="Glass Partition">
+                    </div>
+                    <div class="product-info">
+                        <h3>Glass Office Partitions</h3>
+                        <p>Elegant glass partitions that create open, light-filled spaces while maintaining privacy.</p>
+                        <a href="#" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+                <!-- Add more partition products as needed -->
+                
+            {% elif category == 'flooring' %}
+                <!-- Flooring products -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename='images/products/flooring/flooring-1.jpg') }}" alt="Wooden Flooring">
+                    </div>
+                    <div class="product-info">
+                        <h3>Engineered Wooden Flooring</h3>
+                        <p>Durable and elegant wooden flooring solutions for any interior space.</p>
+                        <a href="#" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+                <!-- Add more flooring products as needed -->
+                
+            {% elif category == 'exterior-wall-cladding' %}
+                <!-- Exterior wall cladding products -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename='images/products/exterior-wall-cladding/cladding-1.jpg') }}" alt="Exterior Cladding">
+                    </div>
+                    <div class="product-info">
+                        <h3>Weather-Resistant Cladding</h3>
+                        <p>Durable exterior cladding solutions that protect and enhance your building's appearance.</p>
+                        <a href="#" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+                <!-- Add more exterior cladding products as needed -->
+                
+            {% elif category == 'interior-wall-cladding' %}
+                <!-- Interior wall cladding products -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename='images/products/interior-wall-cladding/cladding-1.jpg') }}" alt="Interior Cladding">
+                    </div>
+                    <div class="product-info">
+                        <h3>Decorative Wall Panels</h3>
+                        <p>Stylish interior wall cladding options to add texture and character to your spaces.</p>
+                        <a href="#" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+                <!-- Add more interior cladding products as needed -->
+                
+            {% else %}
+                <div class="no-products">
+                    <p>Products for this category will be available soon.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <h2>Need help choosing the right {{ display_name.lower() }} solution?</h2>
+        <p>Our experts are ready to assist you in finding the perfect product for your specific requirements.</p>
+        <div class="cta-buttons">
+            <a href="{{ url_for('contact') }}" class="btn-primary">Contact Us</a>
+            <a href="{{ url_for('quote') }}" class="btn-secondary">Get a Quote</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

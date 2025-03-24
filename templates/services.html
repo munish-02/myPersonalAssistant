@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Services & Projects</h1>
+        <div class="breadcrumbs">
+            <a href="{{ url_for('home') }}">Home</a> / 
+            <span>Services & Projects</span>
+        </div>
+    </div>
+</section>
+
+<!-- Add your services and projects content here -->
+{% endblock %}
