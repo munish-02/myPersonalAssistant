@@ -135,14 +135,19 @@ def chat():
     else:
         session_id = session['session_id']
         thread_data = thread_store.get(session_id)  # Retrieve thread and chat history from the store
-        thread = thread_data['thread']
-        current_time=datetime.now()
-        threadCreatedAT=thread_data['createdAt']
-        if(current_time-threadCreatedAT>timedelta(hours=1)):
+        try:
+            thread = thread_data['thread']
+            current_time=datetime.now()
+            threadCreatedAT=thread_data['createdAt']
+            if(current_time-threadCreatedAT>timedelta(hours=1)):
+                thread = create_thread()  # Create a new thread object
+                thread_store[session_id] = {'thread': thread, 'chat_history': [], 'createdAt':datetime.now()}  # Store thread and chat_history in memory
+                thread_data = thread_store.get(session_id)
+        except:
             thread = create_thread()  # Create a new thread object
             thread_store[session_id] = {'thread': thread, 'chat_history': [], 'createdAt':datetime.now()}  # Store thread and chat_history in memory
             thread_data = thread_store.get(session_id)
-
+        
 
     # Handle POST requests
     if request.method == 'POST':
