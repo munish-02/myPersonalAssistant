@@ -149,7 +149,6 @@ def chat():
 
         try:
             thread = thread_data['thread']
-            logging.debug(f"YOUVE FOUND THE PROBLEM")
             created_at = thread_data.get('createdAt', datetime.now())
             current_time = datetime.now()
 
@@ -164,6 +163,7 @@ def chat():
 
         except Exception as e:
             #logging.error(f"Error retrieving thread: {e}")
+            logging.debug(f"YOUVE FOUND THE PROBLEM")
             thread = create_thread()
             thread_store[session_id] = {
                 'thread': thread,
