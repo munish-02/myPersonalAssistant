@@ -130,7 +130,7 @@ def quality():
 def chat():
     global thread_store
 
-    logging.debug(f"Session data: {dict(session)}")
+
     session_id = session.get('session_id')
 
     if not session_id:
@@ -145,15 +145,16 @@ def chat():
         }
     else:
         thread_data = thread_store.get(session_id)
-        logging.debug(f"Retrieved thread_data for session_id {session_id}: {thread_data}")
+        #logging.debug(f"Retrieved thread_data for session_id {session_id}: {thread_data}")
 
         try:
             thread = thread_data['thread']
+            logging.debug(f"YOUVE FOUND THE PROBLEM")
             created_at = thread_data.get('createdAt', datetime.now())
             current_time = datetime.now()
 
             if (current_time - created_at > timedelta(hours=1)):
-                logging.debug("Thread expired. Creating new thread.")
+                #logging.debug("Thread expired. Creating new thread.")
                 thread = create_thread()
                 thread_store[session_id] = {
                     'thread': thread,
@@ -162,7 +163,7 @@ def chat():
                 }
 
         except Exception as e:
-            logging.error(f"Error retrieving thread: {e}")
+            #logging.error(f"Error retrieving thread: {e}")
             thread = create_thread()
             thread_store[session_id] = {
                 'thread': thread,
@@ -171,18 +172,18 @@ def chat():
             }
 
     thread_data = thread_store.get(session_id)
-    logging.debug(f"Final thread_data for session_id {session_id}: {thread_data}")
+    #logging.debug(f"Final thread_data for session_id {session_id}: {thread_data}")
     if request.method == 'POST':
         try:
             user_message = request.form.get('user_message', type=str)
-            logging.debug(f"User message received: {user_message}")
+            #logging.debug(f"User message received: {user_message}")
 
             if not user_message:
                 return render_template('chat.html', chat_history=thread_data['chat_history'])
 
             bot_response = get_assistant_response(thread_data['thread'], assistant, user_message, index, TEXT_DATABASE_PATH, INDEX_DATABASE_PATH)
 
-            logging.debug(f"Bot response: {bot_response}")
+            #logging.debug(f"Bot response: {bot_response}")
 
             thread_data['chat_history'].append(f"You: {user_message}")
             thread_data['chat_history'].append(f"Bot: {bot_response}")
@@ -190,7 +191,7 @@ def chat():
             save_thread_store(thread_store)
             return render_template('chat.html', chat_history=thread_data['chat_history'])
         except Exception as e:
-            logging.exception("Exception in POST /ass")
+            #logging.exception("Exception in POST /ass")
             return render_template('chat.html', chat_history=[f"An error occurred: {str(e)}"])
     else:
         return render_template('chat.html', chat_history=thread_data['chat_history'])
