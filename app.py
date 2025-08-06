@@ -178,12 +178,20 @@ def chat():
     session_id = get_or_create_session()
     thread_data = thread_store[session_id]
     
+    # Debug logging - remove in production
+    print(f"\n=== CHAT REQUEST DEBUG ===")
+    print(f"Method: {request.method}")
+    print(f"Session ID: {session_id}")
+    print(f"Chat history length BEFORE: {len(thread_data['chat_history'])}")
+    print(f"Last 2 messages BEFORE: {thread_data['chat_history'][-2:] if len(thread_data['chat_history']) >= 2 else thread_data['chat_history']}")
+    
     # Check if thread needs to be recreated (older than 1 hour)
     current_time = datetime.now()
     thread_created_at = thread_data['createdAt']
     
     if current_time - thread_created_at > timedelta(hours=1):
         # Create new thread but keep chat history
+        print(f"DEBUG: Recreating thread (age: {current_time - thread_created_at})")
         thread = create_thread()
         thread_data['thread'] = thread
         thread_data['createdAt'] = current_time
@@ -195,8 +203,13 @@ def chat():
             # Get the user's message from the form
             user_message = request.form.get('user_message', type=str)
             if not user_message:
+                print("DEBUG: No user message received")
                 return render_template('chat.html', 
-                                     chat_history=thread_data['chat_history'])
+                                     chat_history=thread_data['chat_history'],
+                                     debug_info=f"Session: {session_id}, History count: {len(thread_data['chat_history'])}")
+
+            print(f"DEBUG: NEW USER MESSAGE: '{user_message}'")
+            print(f"DEBUG: Chat history length BEFORE adding: {len(thread_data['chat_history'])}")
 
             # Get assistant response
             bot_response = get_assistant_response(
@@ -208,23 +221,47 @@ def chat():
                 INDEX_DATABASE_PATH
             )
 
+            print(f"DEBUG: BOT RESPONSE: '{bot_response[:100]}...'")
+
             # Append user and bot messages to chat history
             thread_data['chat_history'].append(f"You: {user_message}")
             thread_data['chat_history'].append(f"Bot: {bot_response}")
             thread_data['lastActivity'] = current_time
 
+            print(f"DEBUG: Chat history length AFTER adding: {len(thread_data['chat_history'])}")
+            print(f"DEBUG: Last 2 messages AFTER adding: {thread_data['chat_history'][-2:]}")
+
             # Save thread store after each interaction
             save_thread_store(thread_store)
+            
+            print(f"DEBUG: Successfully saved thread store")
+            print(f"=== END CHAT REQUEST DEBUG ===\n")
 
-            return render_template('chat.html', 
-                                 chat_history=thread_data['chat_history'])
+            # Use POST-redirect-GET pattern to prevent form resubmission
+            session['temp_chat_history'] = thread_data['chat_history'].copy()
+            return redirect(url_for('chat'))
+            
         except Exception as e:
+            print(f"DEBUG: Error occurred: {str(e)}")
             return render_template('chat.html', 
-                                 chat_history=[f"An error occurred: {str(e)}"])
+                                 chat_history=[f"An error occurred: {str(e)}"],
+                                 debug_info=f"Session: {session_id}, Error: {str(e)}")
     else:
         # Handle GET requests
+        print(f"DEBUG: GET request - returning {len(thread_data['chat_history'])} messages")
+        
+        # Check if we have temporary chat history from a redirect
+        if 'temp_chat_history' in session:
+            temp_history = session.pop('temp_chat_history')
+            print(f"DEBUG: Using temp chat history with {len(temp_history)} messages")
+            return render_template('chat.html', 
+                                 chat_history=temp_history,
+                                 debug_info=f"Session: {session_id}, History count: {len(temp_history)} (from temp)")
+        
+        print(f"=== END CHAT REQUEST DEBUG ===\n")
         return render_template('chat.html', 
-                             chat_history=thread_data['chat_history'])
+                             chat_history=thread_data['chat_history'],
+                             debug_info=f"Session: {session_id}, History count: {len(thread_data['chat_history'])}")
 
 @app.route('/deleteNotes', methods=['GET', 'POST'])
 def deleteNotesPage():
@@ -236,6 +273,38 @@ def deleteNotesPage():
     
     notes = getAllNotes(TEXT_DATABASE_PATH)
     return render_template('deleteNotes.html', notes=notes)
+
+# Add a route to manually clear current session's chat history
+@app.route('/clear-chat-history')
+def clear_chat_history():
+    """Clear current session's chat history"""
+    session_id = get_or_create_session()
+    if session_id in thread_store:
+        thread_store[session_id]['chat_history'] = []
+        save_thread_store(thread_store)
+        return f"Cleared chat history for session {session_id}"
+    return "No active session found"
+
+# Add a simple test route to check thread_store persistence
+@app.route('/test-persistence')
+def test_persistence():
+    """Test route to verify thread_store persistence"""
+    session_id = get_or_create_session()
+    thread_data = thread_store[session_id]
+    
+    # Add a test message if none exists
+    if not thread_data['chat_history']:
+        thread_data['chat_history'].append("Test: First message")
+        save_thread_store(thread_store)
+    
+    return {
+        'session_id': session_id,
+        'chat_history': thread_data['chat_history'],
+        'history_length': len(thread_data['chat_history']),
+        'thread_data_keys': list(thread_data.keys()),
+        'created_at': str(thread_data['createdAt']),
+        'last_activity': str(thread_data.get('lastActivity', 'Not set'))
+    }
 
 # Utility routes for debugging and maintenance
 @app.route('/debug-session')
