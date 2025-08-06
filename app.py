@@ -8,7 +8,16 @@ from modules.fileManagement import load_thread_store, save_thread_store, returnV
 
 # Flask app setup
 app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use environment variable for better security
+
+# Improved session configuration
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-very-secure-secret-key-here')  # Use a strong secret key
+app.config.update(
+    SESSION_COOKIE_SECURE=True,  # Only send cookies over HTTPS
+    SESSION_COOKIE_HTTPONLY=True,  # Prevent JavaScript access to session cookies
+    SESSION_COOKIE_SAMESITE='Lax',  # CSRF protection
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=24),  # Session expires after 24 hours
+    SESSION_COOKIE_NAME='trident_session'  # Custom cookie name
+)
 
 # Path to save and load thread_store data
 INDEX_DATABASE_PATH='databases/indexDatabase.bin'
@@ -24,6 +33,57 @@ if os.path.exists(INDEX_DATABASE_PATH):
 else:
     index=createNewIndexDatabase()
     saveVectorDatabase(index,INDEX_DATABASE_PATH)
+
+def get_or_create_session():
+    """Helper function to manage session creation and retrieval"""
+    global thread_store
+    
+    # Make session permanent to use PERMANENT_SESSION_LIFETIME
+    session.permanent = True
+    
+    # Check if session_id exists and is valid
+    session_id = session.get('session_id')
+    
+    if not session_id or session_id not in thread_store:
+        # Create new session
+        session_id = str(uuid.uuid4())
+        session['session_id'] = session_id
+        thread = create_thread()
+        thread_store[session_id] = {
+            'thread': thread, 
+            'chat_history': [], 
+            'createdAt': datetime.now(),
+            'lastActivity': datetime.now()
+        }
+        # Save immediately after creating new session
+        save_thread_store(thread_store)
+    else:
+        # Update last activity time
+        thread_store[session_id]['lastActivity'] = datetime.now()
+    
+    return session_id
+
+def cleanup_old_sessions():
+    """Remove sessions older than 24 hours"""
+    global thread_store
+    current_time = datetime.now()
+    sessions_to_remove = []
+    
+    for session_id, data in thread_store.items():
+        last_activity = data.get('lastActivity', data.get('createdAt', datetime.now()))
+        if current_time - last_activity > timedelta(hours=24):
+            sessions_to_remove.append(session_id)
+    
+    for session_id in sessions_to_remove:
+        del thread_store[session_id]
+    
+    if sessions_to_remove:
+        save_thread_store(thread_store)
+
+@app.before_request
+def before_request():
+    """Run before each request to clean up old sessions"""
+    cleanup_old_sessions()
 
 @app.route('/')
 def landing():
@@ -54,9 +114,6 @@ def products(category):
     
     # Get the display name or use the slug if not found
     display_name = category_names.get(category, category.replace('-', ' ').title())
-    
-    # You can add logic here to fetch specific products for each category
-    # For now, we'll just pass the category name to the template
     
     return render_template('products.html', 
                           category=category,
@@ -116,32 +173,22 @@ def quality():
 
 @app.route('/ass', methods=['GET', 'POST'])
 def chat():
-    global thread_store  # Ensure we're working with the global thread_store
-
-    # Check if the session has a session_id; if not, create one
-    if 'session_id' not in session:
-        session_id = str(uuid.uuid4())  # Generate a unique session ID
-        session['session_id'] = session_id
-        thread = create_thread()  # Create a new thread object
-        thread_store[session_id] = {'thread': thread, 'chat_history': [], 'createdAt':datetime.now()}  # Store thread and chat_history in memory
-        thread_data = thread_store.get(session_id)
-        
-    else:
-        session_id = session['session_id']
-        thread_data = thread_store.get(session_id)  # Retrieve thread and chat history from the store
-        try:
-            thread = thread_data['thread']
-            current_time=datetime.now()
-            threadCreatedAT=thread_data['createdAt']
-            if(current_time-threadCreatedAT>timedelta(hours=1)):
-                thread = create_thread()  # Create a new thread object
-                thread_store[session_id] = {'thread': thread, 'chat_history': [], 'createdAt':datetime.now()}  # Store thread and chat_history in memory
-                thread_data = thread_store.get(session_id)
-        except:
-            thread = create_thread()  # Create a new thread object
-            thread_store[session_id] = {'thread': thread, 'chat_history': [], 'createdAt':datetime.now()}  # Store thread and chat_history in memory
-            thread_data = thread_store.get(session_id)
-        
+    global thread_store
+    
+    # Get or create session using helper function
+    session_id = get_or_create_session()
+    thread_data = thread_store[session_id]
+    
+    # Check if thread needs to be recreated (older than 1 hour)
+    current_time = datetime.now()
+    thread_created_at = thread_data['createdAt']
+    
+    if current_time - thread_created_at > timedelta(hours=1):
+        # Create new thread but keep chat history
+        thread = create_thread()
+        thread_data['thread'] = thread
+        thread_data['createdAt'] = current_time
+        save_thread_store(thread_store)
 
     # Handle POST requests
     if request.method == 'POST':
@@ -149,24 +196,40 @@ def chat():
             # Get the user's message from the form
             user_message = request.form.get('user_message', type=str)
             if not user_message:
-                return render_template('chat.html', chat_history=thread_data['chat_history'])
+                return render_template('chat.html', 
+                                     chat_history=thread_data['chat_history'],
+                                     session_id=session_id)  # Debug info
 
             # Get assistant response
-            bot_response = get_assistant_response(thread, assistant, user_message,index,TEXT_DATABASE_PATH,INDEX_DATABASE_PATH)
+            bot_response = get_assistant_response(
+                thread_data['thread'], 
+                assistant, 
+                user_message,
+                index,
+                TEXT_DATABASE_PATH,
+                INDEX_DATABASE_PATH
+            )
 
             # Append user and bot messages to chat history
             thread_data['chat_history'].append(f"You: {user_message}")
             thread_data['chat_history'].append(f"Bot: {bot_response}")
+            thread_data['lastActivity'] = current_time
 
             # Save thread store after each interaction
             save_thread_store(thread_store)
 
-            return render_template('chat.html', chat_history=thread_data['chat_history'])
+            return render_template('chat.html', 
+                                 chat_history=thread_data['chat_history'],
+                                 session_id=session_id)  # Debug info
         except Exception as e:
-            return render_template('chat.html', chat_history=[f"An error occurred: {str(e)}"])
+            return render_template('chat.html', 
+                                 chat_history=[f"An error occurred: {str(e)}"],
+                                 session_id=session_id)  # Debug info
     else:
         # Handle GET requests
-        return render_template('chat.html', chat_history=thread_data['chat_history'])
+        return render_template('chat.html', 
+                             chat_history=thread_data['chat_history'],
+                             session_id=session_id)  # Debug info
 
 @app.route('/deleteNotes', methods=['GET', 'POST'])
 def deleteNotesPage():
@@ -183,6 +246,17 @@ def deleteNotesPage():
 def save_on_shutdown(exception=None):
     """Save the thread store when the application shuts down."""
     save_thread_store(thread_store)
+
+# Add a route to debug session issues
+@app.route('/debug-session')
+def debug_session():
+    """Debug route to check session information"""
+    return {
+        'session_id': session.get('session_id'),
+        'session_data': dict(session),
+        'thread_store_keys': list(thread_store.keys()) if thread_store else [],
+        'cookies': dict(request.cookies)
+    }
 
 if __name__ == '__main__':
     # Ensure the thread store is loaded when the app starts
