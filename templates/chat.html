@@ -107,6 +107,12 @@
     </style>
 </head>
 <body>
+    <!-- Add this to your chat.html template temporarily -->
+<div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-size: 12px;">
+    <strong>Debug Info:</strong> {{ debug_info }}<br>
+    <strong>Chat History Count:</strong> {{ chat_history|length }}<br>
+    <strong>Chat History:</strong> {{ chat_history }}
+</div>
     <div class="container">
         <div class="header">
             Your Personal Assistant 🎉
