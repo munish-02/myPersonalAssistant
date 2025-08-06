@@ -16,7 +16,6 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True,  # Prevent JavaScript access to session cookies
     SESSION_COOKIE_SAMESITE='Lax',  # CSRF protection
     PERMANENT_SESSION_LIFETIME=timedelta(hours=24),  # Session expires after 24 hours
-    SESSION_COOKIE_NAME='trident_session'  # Custom cookie name
 )
 
 # Path to save and load thread_store data
@@ -197,8 +196,7 @@ def chat():
             user_message = request.form.get('user_message', type=str)
             if not user_message:
                 return render_template('chat.html', 
-                                     chat_history=thread_data['chat_history'],
-                                     session_id=session_id)  # Debug info
+                                     chat_history=thread_data['chat_history'])
 
             # Get assistant response
             bot_response = get_assistant_response(
@@ -219,17 +217,14 @@ def chat():
             save_thread_store(thread_store)
 
             return render_template('chat.html', 
-                                 chat_history=thread_data['chat_history'],
-                                 session_id=session_id)  # Debug info
+                                 chat_history=thread_data['chat_history'])
         except Exception as e:
             return render_template('chat.html', 
-                                 chat_history=[f"An error occurred: {str(e)}"],
-                                 session_id=session_id)  # Debug info
+                                 chat_history=[f"An error occurred: {str(e)}"])
     else:
         # Handle GET requests
         return render_template('chat.html', 
-                             chat_history=thread_data['chat_history'],
-                             session_id=session_id)  # Debug info
+                             chat_history=thread_data['chat_history'])
 
 @app.route('/deleteNotes', methods=['GET', 'POST'])
 def deleteNotesPage():
@@ -242,12 +237,7 @@ def deleteNotesPage():
     notes = getAllNotes(TEXT_DATABASE_PATH)
     return render_template('deleteNotes.html', notes=notes)
 
-@app.teardown_appcontext
-def save_on_shutdown(exception=None):
-    """Save the thread store when the application shuts down."""
-    save_thread_store(thread_store)
-
-# Add a route to debug session issues
+# Utility routes for debugging and maintenance
 @app.route('/debug-session')
 def debug_session():
     """Debug route to check session information"""
@@ -255,8 +245,24 @@ def debug_session():
         'session_id': session.get('session_id'),
         'session_data': dict(session),
         'thread_store_keys': list(thread_store.keys()) if thread_store else [],
-        'cookies': dict(request.cookies)
+        'cookies': dict(request.cookies),
+        'thread_store_count': len(thread_store) if thread_store else 0
     }
+
+@app.route('/clear-session')
+def clear_session():
+    """Utility route to clear session cookies - remove in production"""
+    session.clear()
+    response = redirect(url_for('chat'))
+    # Clear any old cookies that might be causing conflicts
+    response.set_cookie('session', '', expires=0)
+    response.set_cookie('trident_session', '', expires=0)
+    return response
+
+@app.teardown_appcontext
+def save_on_shutdown(exception=None):
+    """Save the thread store when the application shuts down."""
+    save_thread_store(thread_store)
 
 if __name__ == '__main__':
     # Ensure the thread store is loaded when the app starts
